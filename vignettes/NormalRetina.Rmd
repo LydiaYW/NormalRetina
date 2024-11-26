@@ -1,8 +1,8 @@
 ---
-title: "not-cool-package"
+title: "NormalRetina"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{not-cool-package}
+  %\VignetteIndexEntry{NormalRetina}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(egpkg2024)
+library(NormalRetina)
 
 
 set.seed(312)
@@ -28,17 +28,17 @@ The value of $\pi$ is `r pi`.
 
 ```{r out.width="100%"}
 knitr::include_graphics(
-  system.file("R_logo.svg.png", package = "egpkg2024")
+  system.file("R_logo.svg.png", package = "NormalRetina")
 )
 ```
 
-![](`r system.file("R_logo.svg.png", package = "egpkg2024")`)
+![](`r system.file("R_logo.svg.png", package = "NormalRetina")`)
 
 
 You can see a full featured R script that uses the package under the following path:
 
 ```r
-system.file("analysis-scripts/analysis.R", package="egpkg2024")
+system.file("analysis-scripts/analysis.R", package="NormalRetina")
 ```
 
 (which will vary depending on where you installed the package).

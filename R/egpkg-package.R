@@ -1,3 +1,3 @@
 #' @importFrom Rcpp evalCpp
-#' @useDynLib egpkg2024, .registration = TRUE
+#' @useDynLib NormalRetina, .registration = TRUE
 NULL

@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(egpkg2024)
+library(NormalRetina)
 
-test_check("egpkg2024")
+test_check("NormalRetina")

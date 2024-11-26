@@ -8,6 +8,6 @@
 #' rcpp_hello_world()
 #' @export
 rcpp_hello_world <- function() {
-    .Call(`_egpkg2024_rcpp_hello_world`)
+    .Call(`_NormalRetina_rcpp_hello_world`)
 }
 
