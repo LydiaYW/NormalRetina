@@ -8,6 +8,8 @@
 #' @import qgam
 #' @import lme4
 #' @import ranger
+#' @import dplyr
+#' @import stats
 #' @examples
 #' # Here is an example
 #'

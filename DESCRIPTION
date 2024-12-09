@@ -1,17 +1,16 @@
 Package: NormalRetina
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: Predict Normative Retina Sensitivity
 Version: 1.0
-Date: 2023-02-23
-Author: Your Name
-Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the package does as
-       one or more full sentences.
+Date: 2024-12-03
+Author: Yingjia Wei
+Maintainer: Yingjia Wei <yingjia.wei@hsc.utah.edu>
+Description: Models were developed using the variables: participant age, eye, eccentricity and angular distance from the fovea, and spatial coordinates (x,y). We compared the performance between random forest models (RF) with two commonly used statistical approaches, linear mixed models (LMM) and Bayesian quantile regressions (BQR) using 10-fold patient-wise cross-validation. The mean absolute error (MAE) and mean absolute calibration error (MACE) were evaluated as performance measures. A conformal prediction framework was employed for calibration, using a patient-wise training-to-calibration data split.
 License: GPL (>= 2)
 Imports: 
     Rcpp,
     graphics,
-    gstat, parallel,
+    gstat, parallel, dplyr, stats, sp,
     data.table, lme4, qgam, ranger
 LinkingTo: Rcpp
 Roxygen: list(markdown = TRUE)

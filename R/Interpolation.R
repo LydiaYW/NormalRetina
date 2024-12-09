@@ -4,6 +4,7 @@
 #' @export
 #' @import graphics
 #' @import gstat
+#' @import sp
 #' @import parallel
 #' @import data.table
 #' @examples

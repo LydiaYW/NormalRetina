@@ -8,7 +8,7 @@ PredictNormal(
   dt,
   exam = "Mesopic",
   model = "LMM",
-  CaliSplit = 0.2,
+  CalibSplit = 0.2,
   coverage = 0.95
 )
 }
@@ -19,7 +19,7 @@ PredictNormal(
 
 \item{model}{A string.}
 
-\item{CaliSplit}{A number.}
+\item{CalibSplit}{A number.}
 
 \item{coverage}{A number.}
 }
