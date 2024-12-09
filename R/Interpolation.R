@@ -7,7 +7,7 @@
 #' @examples
 #' # Here is an example
 #'
-Interpolation <- function(dt, exam){
+Interpolation <- function(dt, exam, model){
   if(!(exam %in% c("Mesopic", "Cyan", "Red"))){
     stop("Please indicate the type of exam (Mesopic, Cyan or Red)")
   }
