@@ -4,7 +4,13 @@
 \alias{PredictNormal}
 \title{Predict normative retina sensitivity}
 \usage{
-PredictNormal(dt, exam = "Mesopic", model = "LMM")
+PredictNormal(
+  dt,
+  exam = "Mesopic",
+  model = "LMM",
+  CaliSplit = 0.2,
+  coverage = 0.95
+)
 }
 \arguments{
 \item{dt}{A numeric matrix from SensForFit.}
@@ -12,6 +18,10 @@ PredictNormal(dt, exam = "Mesopic", model = "LMM")
 \item{exam}{A string.}
 
 \item{model}{A string.}
+
+\item{CaliSplit}{A number.}
+
+\item{coverage}{A number.}
 }
 \description{
 Predict normative retina sensitivity

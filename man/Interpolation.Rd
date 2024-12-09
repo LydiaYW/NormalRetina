@@ -4,14 +4,12 @@
 \alias{Interpolation}
 \title{Predict normative retina sensitivity}
 \usage{
-Interpolation(dt, exam, model)
+Interpolation(dt, exam)
 }
 \arguments{
 \item{dt}{A numeric matrix from SensForFit.}
 
 \item{exam}{A string.}
-
-\item{model}{A string.}
 }
 \description{
 Predict normative retina sensitivity
