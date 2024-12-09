@@ -20,7 +20,7 @@ Interpolation <- function(dt, exam) {
     output <- mclapply(unique(dt$Examtype), function(exam) {
       set.seed(123)
 
-      interpol_dat <- dt[Examtype == exam]
+      interpol_dat <- dt[dt$Examtype == exam]
       coordinates(interpol_dat) <- ~x + y
 
       # Fit variogram with grid search for optimal parameters
