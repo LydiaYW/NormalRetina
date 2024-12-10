@@ -12,7 +12,7 @@
 #' @examples
 #' # Here is an example
 #'
-#'
+#' @export
 PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
                               # other_predict = NULL
 ){
@@ -40,7 +40,7 @@ PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, c
     lm0_lower <- test_pred - q_lm0 # Lower bound of 95% CI
     lm0_upper <- test_pred + q_lm0  # Upper bound of 95% CI
     lm0_observed_coverage <- mean(test$MeanSens >= lm0_lower & test$MeanSens <= lm0_upper)
-    lm0_mace <- abs(lm0_observed_coverage - nominal_coverage)
+    lm0_mace <- abs(lm0_observed_coverage - coverage)
 
     # Store results
     cv_mae[[i]] <- data.frame(fold = i, mae = lm0_mae, model = "lmm")

@@ -10,6 +10,7 @@
 #' @examples
 #' # Here is an example
 #'
+#' @export
 Interpolation <- function(dt, exam) {
   suppressMessages(suppressWarnings({
 

@@ -12,8 +12,8 @@
 #' @examples
 #' # Here is an example
 #'
-#'
-PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
+#' @export
+PredictNormal_rf <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
                               # other_predict = NULL
 ){
   nFold <- max(dt$fold)
@@ -50,10 +50,10 @@ PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, c
     observed_coverage <- mean(test$MeanSens >= lower_bound & test$MeanSens <= upper_bound)
 
     # Nominal coverage
-    nominal_coverage <- coverage
+    coverage <- coverage
 
     # MACE calculation
-    fold_mace <- abs(observed_coverage - nominal_coverage)
+    fold_mace <- abs(observed_coverage - coverage)
 
     # Store results
     cv_mae[[i]] <- data.frame(fold = i, mae = mean(abs((lower_bound + upper_bound) / 2 - test$MeanSens)), model = "random forest")

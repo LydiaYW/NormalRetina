@@ -10,7 +10,7 @@ License: GPL (>= 2)
 Imports: 
     Rcpp,
     graphics,
-    gstat, parallel, dplyr, stats, sp,
+    gstat, parallel, stats, sp,
     data.table, lme4, qgam, ranger
 LinkingTo: Rcpp
 Roxygen: list(markdown = TRUE)
@@ -22,3 +22,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
+LazyData: true
+LazyDataCompression: xz

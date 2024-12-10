@@ -12,8 +12,8 @@
 #' @examples
 #' # Here is an example
 #'
-#'
-PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
+#' @export
+PredictNormal_bqr <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
                               # other_predict = NULL
 ){
   nFold <- max(dt$fold)
@@ -46,12 +46,12 @@ PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, c
     qgam_lower <- predict(qgam_l, newdata = calib)
     qgam_upper <- predict(qgam_u, newdata = calib)
     E <- pmax(qgam_lower-calib$MeanSens, calib$MeanSens-qgam_upper)
-    adjusted_q <- nominal_coverage*(1+1/nrow(calib))
+    adjusted_q <- coverage*(1+1/nrow(calib))
     Q_E <- quantile(E,probs=adjusted_q, type=1)
     test_lower <- predict(qgam_l, newdata = test)-Q_E
     test_upper <- predict(qgam_u, newdata = test)+Q_E
     qgam_observed_coverage <- mean(test$MeanSens >= test_lower & test$MeanSens <= test_upper)
-    qgam_mace <- abs(qgam_observed_coverage - nominal_coverage)
+    qgam_mace <- abs(qgam_observed_coverage - coverage)
 
     # Store results
     cv_mae[[i]] <- data.frame(fold = i, mae = qgam_mae, model = "bqr")

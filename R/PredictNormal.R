@@ -12,7 +12,7 @@
 #' @examples
 #' # Here is an example
 #'
-#'
+#' @export
 PredictNormal <- function(
     dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
     # other_predict = NULL

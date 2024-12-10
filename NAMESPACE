@@ -2,10 +2,12 @@
 
 export(Interpolation)
 export(PredictNormal)
+export(PredictNormal_bqr)
+export(PredictNormal_lmm)
+export(PredictNormal_rf)
 export(myplot)
 export(rcpp_hello_world)
 import(data.table)
-import(dplyr)
 import(graphics)
 import(gstat)
 import(lme4)
