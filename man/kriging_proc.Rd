@@ -14,7 +14,3 @@ kriging_proc(dt, exam)
 \description{
 Tune kriging model
 }
-\examples{
-# Here is an example
-
-}

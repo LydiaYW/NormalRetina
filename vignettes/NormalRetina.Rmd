@@ -9,28 +9,99 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval=F,
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
+
+# Introduction
+
+`NormalRetina` is an R package designed to predict normative retina sensitivity, providing tools for data processing, modeling, prediction and visualization. It is particularly useful for age-adjusted normative data for retinal sensitivity.
+
+* provide traditional spacial interpolation for a single patient
+* provide model comparison and prediction for a population
+* provide visualization of hill-of-vision map from above methods
+
 ```{r setup}
 library(NormalRetina)
 ```
 
-The value of $\pi$ is `r pi`.
+## Workflow
+
+### Spacial interpolation
+**Step 1: Interpolation**
+There's a virtual patient dataset (ref77) aged 77 in *NormalRetina*.
+
+Based on this virtual patient, `Interpolation()` will now predict the normative sensitivity data for each data point using Kriging parallelly. Kriging is a spatial interpolation technique originally developed for geostatistical applications. Separate surfaces were fit for the mean of all four types of testing (Mesopic, Cyan, Red, CRdiff). Output will be a list of 4 data frames, each contains predicted retina sensitivity for a 40*40 degree grid.
+
+```{r out.width="100%", message=FALSE}
+##----Interpolation----
+data("ref77")
+interpolated_77 <- Interpolation(dt = ref77, ncpus=NULL, cl=NULL)
+```
+
+
+**Step 2: Visualization**
+Function `VisualRetina` will plot hill-of-vision map for the center 20*20 degree predictions. The color of filling will change based types of testing.
+
+```{r out.width="100%", message=FALSE}
+## hill-of-vision from interpolation 
+VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]]$Examtype)) # plot mesopic results for comparison
+```
+
+
+
+
+### Modelling 
+
+**Step 1: Data preparation**
+
+There's a simulated dataset (refMes) of 100 virtual participants aged from 18-84 in *NormalRetina*.
+
+You may use function `SensForFit()` for data preparation. It will check and reshape the data for modelling, also provide a k-fold patient-wise split for model training with cross-validation. It will also change the "<0" dB to 0 dB as it is not possible to have negative sensitivity.
 
 ```{r out.width="100%"}
-
+data("refMes")
+refMes <- SensForFit(dt = refMes, examcol = "Examtype", idcol = "Patient", agecol = "Age", senscol = "MeanSens", k = 10)
 ```
 
-![](`r system.file("R_logo.svg.png", package = "NormalRetina")`)
+**Step 2: Model performance comparison**
 
+Support for **Linear Mixed Models (LMM)**, **Bayesian Quantile Regression (BQR)**, and **Random Forest (RF)**.
 
-You can see a full featured R script that uses the package under the following path:
+The mean absolute error (MAE) and mean absolute calibration error (MACE) were evaluated as performance measures. A conformal prediction framework was employed for calibration, using a 4:1 training-to-calibration patient-wise data split.
 
-```r
-system.file("analysis-scripts/analysis.R", package="NormalRetina")
+`PredictCompare()` function will return a table with model name and performance metrics for comparison. Similarly, it can only work on one of the four types of testing (Mesopic, Cyan, Red, CRdiff). `CalibSplit` is 0.2 by default indicating a 4:1 split between training and calibration sets. `coverage` is 0.95 by default to calculate MACE.
+
+```{r out.width="100%", message=FALSE}
+(res.tab <- PredictCompare(dt = refMes, exam = "Mesopic", CalibSplit = 0.2, coverage = 0.95))
 ```
 
-(which will vary depending on where you installed the package).
+There are also functions to train the model based on each of the three methods:
+
+```{r, eval=FALSE}
+lmm_results <- PredictNormal_lmm(dt = refMes, CalibSplit = 0.2, coverage = 0.95)
+bqr_results <- PredictNormal_bqr(dt = refMes, CalibSplit = 0.2, coverage = 0.95)
+rf_results <- PredictNormal_rf(dt = refMes, CalibSplit = 0.2, coverage = 0.95)
+```
+
+
+**Step 3: Prediction based on optimal model**
+
+For a patient with specific age, you can predict their hill-of-vision map with the optimal model selected from `PredictCompare()` function output. It's also a grid of 40*40 degree.
+
+```{r out.width="100%", message=FALSE}
+## prediction for a future patient aged 77
+pred_BQR_77 <- PredictSensitivity(model = "BQR", age = 77, dt = refMes)
+```
+
+**Step 4: Visualization**
+Based on the prediction, you can plot the hill-of-vision map with function `VisualRetina()`.
+
+```{r out.width="100%", message=FALSE}
+## hill-of-vision for new patient
+VisualRetina(pred_sens = pred_BQR_77, exam = "Mesopic")
+```
+

@@ -52,71 +52,32 @@ devtools::install_github("LydiaYW/NormalRetina")
 
 This is a basic example which shows you how to solve a common problem:
 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5.........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025...............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975.................done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025................done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975.............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025.........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975..........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025.........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975.................done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5..........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025...........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975..............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5.................done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025.............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025.................done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975..............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5..........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975.............done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5.........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025...........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975...........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5...........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.025..........done 
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.975............done
-    #>             Model MAE                MACE                
-    #> lmm_results "LMM" "1.41338551298175" "0.0252792052478238"
-    #> bqr_results "BQR" "1.70689610358974" "0.0181690171638242"
-    #> rf_results  "RF"  "1.53732237195878" "0.0297107777235023"
-    #> Estimating learning rate. Each dot corresponds to a loss evaluation. 
-    #> qu = 0.5.........done
+``` r
+library(NormalRetina)
 
-<img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" />
+##----pre processing----
+data("refMes")
+refMes <- SensForFit(dt = refMes, examcol = "Examtype", idcol = "Patient", agecol = "Age", senscol = "MeanSens", k = 10)
+
+##----model comparison----
+PredictCompare(dt = refMes, exam = "Mesopic", CalibSplit = 0.2, coverage = 0.95)
+## e.g. LMM is the best model
+## prediction for a future patient aged 77
+pred_BQR_77 <- PredictSensitivity(model = "BQR", age = 77, dt = refMes)
+## hill-of-vision for new patient
+VisualRetina(pred_sens = pred_BQR_77, exam = "Mesopic")
+```
+
+<img src="man/figures/README-example-1.png" style="width:60.0%"
+data-fig-align="left" />
+
+``` r
+##----Interpolation----
+data("ref77")
+interpolated_77 <- Interpolation(dt = ref77)
+## hill-of-vision from interpolation 
+VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]]$Examtype)) # plot mesopic results for comparison
+```
+
+<img src="man/figures/README-example-2.png" style="width:60.0%"
+data-fig-align="left" />

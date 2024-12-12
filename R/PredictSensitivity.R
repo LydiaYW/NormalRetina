@@ -40,9 +40,9 @@ PredictSensitivity <- function(model, age, dt) {
     grid_df[, mean := predict(lmm, newdata = .SD, allow.new.levels = TRUE), .SDcols = c("Age", "eccentricity", "Patient")]
 
   } else if (model=="BQR") {
-    bqr <- qgam(MeanSens ~ s(x, y, k=30) + s(Age, k=3) +
+    bqr <- withCallingHandlers(suppressMessages(qgam(MeanSens ~ s(x, y, k=30) + s(Age, k=3) +
                   ti(x,Age, k=3) + ti(y,Age, k=3),
-                data = dt, qu=0.5)
+                data = dt, qu=0.5)))
     grid_df[, mean := predict(bqr, newdata = .SD), .SDcols = c("Age", "x", "y")]
   } else if (model=="RF") {
     rf <- ranger::ranger(

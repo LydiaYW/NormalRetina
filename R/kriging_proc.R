@@ -6,18 +6,15 @@
 #' @import sp
 #' @import parallel
 #' @import data.table
-#' @examples
-#' # Here is an example
-#'
 #' @export
 kriging_proc <- function(dt, exam){
   grid <- expand.grid(x = seq(-20, 20, by = 0.05), y = seq(-20, 20, by = 0.05))
   grid$eccentricity <- sqrt(grid$x^2 + grid$y^2)
-  coordinates(grid) <- ~x+y
+  sp::coordinates(grid) <- ~x+y
   gridded(grid) <- TRUE
 
   interpol_dat <- dt[dt$Examtype == exam]
-  coordinates(interpol_dat) <- ~x + y
+  sp::coordinates(interpol_dat) <- ~x+y
 
   # Fit variogram with grid search for optimal parameters
   min_rmse <- Inf
@@ -59,5 +56,5 @@ kriging_proc <- function(dt, exam){
   }
 
   kriging_result <- krige(MeanSens ~ 1, interpol_dat, grid, model = vgm_fit)
-  data.table(Examtype = exam, X_corr = grid$x, Y_corr = grid$y, mean = kriging_result$var1.pred)
+  data.frame(Examtype = exam, X_corr = grid$x, Y_corr = grid$y, mean = kriging_result$var1.pred)
 }

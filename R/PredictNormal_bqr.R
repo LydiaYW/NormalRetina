@@ -26,18 +26,19 @@ PredictNormal_bqr <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, c
 
     # Fit qgam model
     #train <- dt[dt$fold != i,]
-    qgam <- qgam(MeanSens ~ s(x, y, k=30) + s(Age, k=3) +
+    qgam <- withCallingHandlers(
+      suppressMessages(qgam(MeanSens ~ s(x, y, k=30) + s(Age, k=3) +
                    ti(x,Age, k=3) + ti(y,Age, k=3),
-                 data = train, qu=0.5)
+                 data = train, qu=0.5)))
     qgam_pred <- predict(qgam, newdata = test)
     qgam_mae <- mean(abs(qgam_pred - test$MeanSens))
 
-    qgam_l <- qgam(MeanSens ~ s(x, y, k = 30) + s(Age, k = 3) +
+    qgam_l <- withCallingHandlers(suppressMessages(qgam(MeanSens ~ s(x, y, k = 30) + s(Age, k = 3) +
                      ti(x, Age, k = 3) + ti(y, Age, k = 3),
-                   data = train, qu = (1-coverage)/2)
-    qgam_u <- qgam(MeanSens ~ s(x, y, k = 30) + s(Age, k = 3) +
+                   data = train, qu = (1-coverage)/2)))
+    qgam_u <- withCallingHandlers(suppressMessages(qgam(MeanSens ~ s(x, y, k = 30) + s(Age, k = 3) +
                      ti(x, Age, k = 3) + ti(y, Age, k = 3),
-                   data = train, qu = 1-(1-coverage)/2)
+                   data = train, qu = 1-(1-coverage)/2)))
     qgam_lower <- predict(qgam_l, newdata = calib)
     qgam_upper <- predict(qgam_u, newdata = calib)
     E <- pmax(qgam_lower-calib$MeanSens, calib$MeanSens-qgam_upper)

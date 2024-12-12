@@ -50,7 +50,7 @@ devtools::install_github("LydiaYW/NormalRetina")
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example, message=FALSE, warning=FALSE}
+```{r example, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
 library(NormalRetina)
 
 ##----pre processing----
@@ -62,12 +62,15 @@ PredictCompare(dt = refMes, exam = "Mesopic", CalibSplit = 0.2, coverage = 0.95)
 ## e.g. LMM is the best model
 ## prediction for a future patient aged 77
 pred_BQR_77 <- PredictSensitivity(model = "BQR", age = 77, dt = refMes)
-## hill-of-vision for new patien
+## hill-of-vision for new patient
 VisualRetina(pred_sens = pred_BQR_77, exam = "Mesopic")
-
+```
+![](man/figures/README-example-1.png){width="60%" fig-align="left"}
+```{r,  message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
 ##----Interpolation----
 data("ref77")
 interpolated_77 <- Interpolation(dt = ref77)
 ## hill-of-vision from interpolation 
 VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]]$Examtype)) # plot mesopic results for comparison
 ```
+![](man/figures/README-example-2.png){width="60%" fig-align="left"}

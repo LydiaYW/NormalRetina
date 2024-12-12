@@ -2,9 +2,9 @@
 % Please edit documentation in R/Interpolation.R
 \name{Interpolation}
 \alias{Interpolation}
-\title{Predict normative retina sensitivity}
+\title{Predict normative retina sensitivity with spacial interpolation}
 \usage{
-Interpolation(dt, exam, ncpus = 1L, cl = NULL)
+Interpolation(dt, exam = "Mesopic", ncpus = NULL, cl = NULL)
 }
 \arguments{
 \item{dt}{A numeric matrix from SensForFit.}
@@ -16,9 +16,9 @@ Interpolation(dt, exam, ncpus = 1L, cl = NULL)
 \item{cl}{A number.}
 }
 \description{
-Predict normative retina sensitivity
+Predict normative retina sensitivity with spacial interpolation
 }
 \examples{
 # Here is an example
-Interpolation(ref77, "Mesopic")
+interpolated_pred=Interpolation(dt=ref77, ncpus=NULL, cl=NULL)
 }

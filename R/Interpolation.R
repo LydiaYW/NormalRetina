@@ -1,5 +1,6 @@
-#' Predict normative retina sensitivity
+#' Predict normative retina sensitivity with spacial interpolation
 #' @param dt A numeric matrix from SensForFit.
+#' @param exam A string.
 #' @param ncpus A number.
 #' @param cl A number.
 #' @import graphics
@@ -9,13 +10,13 @@
 #' @import data.table
 #' @examples
 #' # Here is an example
-#' Interpolation(ref77)
+#' interpolated_pred=Interpolation(dt=ref77, ncpus=NULL, cl=NULL)
 #' @export
-Interpolation <- function(dt, ncpus=NULL, cl=NULL) {
+Interpolation <- function(dt, exam="Mesopic", ncpus=NULL, cl=NULL) {
   output <- list()
   # Calling parallel
   if (is.null(ncpus)) {
-    ncpus <- max(1, parallel::detectCores() - 1)  # Use all but one core
+    ncpus <- max(1, parallel::detectCores() - 1)
   }
 
   if (is.null(cl) && ncpus > 1) {
@@ -36,8 +37,9 @@ Interpolation <- function(dt, ncpus=NULL, cl=NULL) {
   # Perform computation
   if (!is.null(cl)) {
     # Parallel computation
-    output <- parallel::parLapply(cl, unique(dt$Examtype), function(exam) {
-      kriging_proc(dt, exam)
+    output <- parallel::parLapply(cl, unique(dt$Examtype), function(exam1) {
+      message("Processing exam: ", exam)
+      kriging_proc(dt, exam1)
     })
   }
 
