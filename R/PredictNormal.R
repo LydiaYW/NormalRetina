@@ -4,7 +4,6 @@
 #' @param exam A string.
 #' @param CalibSplit A number.
 #' @param coverage A number.
-#' @export
 #' @import qgam
 #' @import lme4
 #' @import ranger
