@@ -9,7 +9,7 @@ Description: Models were developed using the variables: participant age, eye, ec
 License: GPL (>= 2)
 Imports: 
     Rcpp,
-    graphics,
+    graphics, ggplot2,
     gstat, parallel, stats, sp,
     data.table, lme4, qgam, ranger
 LinkingTo: Rcpp

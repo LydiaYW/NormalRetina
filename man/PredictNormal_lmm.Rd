@@ -2,7 +2,7 @@
 % Please edit documentation in R/PredictNormal_lmm.R
 \name{PredictNormal_lmm}
 \alias{PredictNormal_lmm}
-\title{Predict normative retina sensitivity}
+\title{Predict normative retina sensitivity - lmm}
 \usage{
 PredictNormal_lmm(
   dt,
@@ -24,9 +24,5 @@ PredictNormal_lmm(
 \item{coverage}{A number.}
 }
 \description{
-Predict normative retina sensitivity
-}
-\examples{
-# Here is an example
-
+Predict normative retina sensitivity - lmm
 }

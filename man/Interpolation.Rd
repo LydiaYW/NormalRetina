@@ -4,7 +4,7 @@
 \alias{Interpolation}
 \title{Predict normative retina sensitivity}
 \usage{
-Interpolation(dt, exam, ncpus = NULL, cl = NULL)
+Interpolation(dt, exam, ncpus = 1L, cl = NULL)
 }
 \arguments{
 \item{dt}{A numeric matrix from SensForFit.}
@@ -20,5 +20,5 @@ Predict normative retina sensitivity
 }
 \examples{
 # Here is an example
-
+Interpolation(ref77, "Mesopic")
 }

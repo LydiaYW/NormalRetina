@@ -9,13 +9,13 @@
 #' @import data.table
 #' @examples
 #' # Here is an example
-#'
+#' refMes_ForFit=SensForFit(refMes, "Examtype", "Patient", "Age", "MeanSens", 10)
 #' @export
 SensForFit <- function(dt, examcol, idcol, agecol, senscol, k){
   setDT(dt)
 
   setnames(dt, old = c(idcol, agecol, examcol, senscol),
-           new = c("Patient", "Age", "Examtype", "MeanSens"))
+           new = c("Patient", "Age", "Examtype", "MeanSens"), skip_absent=TRUE)
 
   # filter exam type
   dt <- dt[Examtype %in% c("Mesopic", "Cyan", "Red", "CRdiff")]

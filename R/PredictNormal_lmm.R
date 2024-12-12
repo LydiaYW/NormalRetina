@@ -1,21 +1,14 @@
-#' Predict normative retina sensitivity
+#' Predict normative retina sensitivity - lmm
 #' @param model A string.
 #' @param dt A numeric matrix from SensForFit.
 #' @param exam A string.
 #' @param CalibSplit A number.
 #' @param coverage A number.
 #' @export
-#' @import qgam
 #' @import lme4
-#' @import ranger
 #' @import stats
-#' @examples
-#' # Here is an example
-#'
 #' @export
-PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
-                              # other_predict = NULL
-){
+PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95){
   nFold <- max(dt$fold)
   cv_mae <- list()
   cv_mace <- list()
@@ -30,7 +23,7 @@ PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, c
     test <- dt[dt$fold == i,]
 
     # Fit lmer model
-    lm0 <- lmer(MeanSens ~ Age + (1|Patient), data = train)
+    lm0 <- lmer(MeanSens ~ Age + eccentricity + (1|Patient), data = train)
     calib_pred <- predict(lm0, newdata = calib, allow.new.levels = TRUE)
     calib_residuals <- abs(calib$MeanSens - calib_pred)
     q_lm0 <- quantile(calib_residuals, coverage)
@@ -43,15 +36,11 @@ PredictNormal_lmm <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, c
     lm0_mace <- abs(lm0_observed_coverage - coverage)
 
     # Store results
-    cv_mae[[i]] <- data.frame(fold = i, mae = lm0_mae, model = "lmm")
-    cv_mace[[i]] <- data.frame(
-      fold = i,
-      model = c("lmm"),
-      mace = c(lm0_mace),
-      observed_coverage = c(lm0_observed_coverage)
-    )
+    cv_mae[[i]] <- lm0_mae
+    cv_mace[[i]] <- lm0_mace
   }
-  cv_mae_tab <- rbindlist(cv_mae)
-  cv_mace_tab <- rbindlist(cv_mace)
-  return(list(cv_mae_tab,cv_mace_tab))
+  # Compute overall metrics
+  cv_mae_overall <- mean(unlist(cv_mae))
+  cv_mace_overall <- mean(unlist(cv_mace))
+  return(c("LMM", cv_mae_overall, cv_mace_overall))
 }

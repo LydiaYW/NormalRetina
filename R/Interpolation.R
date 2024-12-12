@@ -10,27 +10,41 @@
 #' @import data.table
 #' @examples
 #' # Here is an example
-#'
+#' Interpolation(ref77, "Mesopic")
 #' @export
-Interpolation <- function(dt, exam, ncpus=NULL, cl=NULL) {
-    if(!(exam %in% c("Mesopic", "Cyan", "Red", "CRdiff"))){
-      stop("Please indicate the type of exam (Mesopic, Cyan, Red or CRdiff)")
-    }
+Interpolation <- function(dt, exam, ncpus=1L, cl=NULL) {
+  output <- list()
 
-    # Calling parallel
-    if ((ncpus > 1) | length(cl)) {
+  if(!(exam %in% c("Mesopic", "Cyan", "Red", "CRdiff"))){
+    stop("Please indicate the type of exam (Mesopic, Cyan, Red or CRdiff)")
+  }
+  # Calling parallel
+  if (is.null(ncpus)) {
+    ncpus <- max(1, parallel::detectCores() - 1)  # Use all but one core
+  }
 
-      # Creating the cluster
-      if (!length(cl)) {
-        cl <- parallel::makeCluster(ncpus)
-        on.exit(parallel::stopCluster(cl))
+  if (is.null(cl) && ncpus > 1) {
+    cl <- parallel::makeCluster(ncpus)
+    on.exit(parallel::stopCluster(cl))  # Ensure the cluster is stopped on exit
+  }
 
-        # Loading R packages
-        parallel::clusterEvalQ(cl, library(netdiffuseR))
-      }
-    }
+  if (!is.null(cl)) {
+    parallel::clusterEvalQ(cl, {
+      library(NormalRetina)
+      library(gstat)
+      library(sp)
+      library(data.table)
+    })# Load the required package
+    parallel::clusterExport(cl, varlist = c("dt", "kriging_proc"), envir = environment())
+  }
 
-    output <- parLapply(cl, unique(dt$Examtype), function(exam){
+  # Perform computation
+  if (!is.null(cl)) {
+    # Parallel computation
+    output <- parallel::parLapply(cl, unique(dt$Examtype), function(exam) {
       kriging_proc(dt, exam)
     })
+  }
+
+  return(output)
 }

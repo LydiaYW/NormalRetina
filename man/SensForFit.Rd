@@ -24,5 +24,5 @@ Sensitivity data pre-processing
 }
 \examples{
 # Here is an example
-
+refMes_ForFit=SensForFit(refMes, "Examtype", "Patient", "Age", "MeanSens", 10)
 }

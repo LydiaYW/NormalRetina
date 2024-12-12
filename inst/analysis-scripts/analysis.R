@@ -1,2 +1,0 @@
-setwd("george/akjdalk")
-

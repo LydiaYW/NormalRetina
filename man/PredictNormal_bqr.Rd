@@ -2,7 +2,7 @@
 % Please edit documentation in R/PredictNormal_bqr.R
 \name{PredictNormal_bqr}
 \alias{PredictNormal_bqr}
-\title{Predict normative retina sensitivity}
+\title{Predict normative retina sensitivity - bqr}
 \usage{
 PredictNormal_bqr(
   dt,
@@ -24,9 +24,5 @@ PredictNormal_bqr(
 \item{coverage}{A number.}
 }
 \description{
-Predict normative retina sensitivity
-}
-\examples{
-# Here is an example
-
+Predict normative retina sensitivity - bqr
 }

@@ -11,6 +11,11 @@
 #'
 #' @export
 kriging_proc <- function(dt, exam){
+  grid <- expand.grid(x = seq(-20, 20, by = 0.05), y = seq(-20, 20, by = 0.05))
+  grid$eccentricity <- sqrt(grid$x^2 + grid$y^2)
+  coordinates(grid) <- ~x+y
+  gridded(grid) <- TRUE
+
   interpol_dat <- dt[dt$Examtype == exam]
   coordinates(interpol_dat) <- ~x + y
 
@@ -54,10 +59,5 @@ kriging_proc <- function(dt, exam){
   }
 
   kriging_result <- krige(MeanSens ~ 1, interpol_dat, grid, model = vgm_fit)
-  list(
-    data = data.table(Examtype = exam, X_corr = grid$x, Y_corr = grid$y, mean = kriging_result$var1.pred),
-    min_rmse = min_rmse,
-    best_psill = best_psill,
-    best_range = best_range
-  )
+  data.table(Examtype = exam, X_corr = grid$x, Y_corr = grid$y, mean = kriging_result$var1.pred)
 }

@@ -1,17 +1,12 @@
-#' Predict normative retina sensitivity
+#' Predict normative retina sensitivity - random forest
 #' @param model A string.
 #' @param dt A numeric matrix from SensForFit.
 #' @param exam A string.
 #' @param CalibSplit A number.
 #' @param coverage A number.
 #' @export
-#' @import qgam
-#' @import lme4
 #' @import ranger
 #' @import stats
-#' @examples
-#' # Here is an example
-#'
 #' @export
 PredictNormal_rf <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
                               # other_predict = NULL
@@ -56,10 +51,11 @@ PredictNormal_rf <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, co
     fold_mace <- abs(observed_coverage - coverage)
 
     # Store results
-    cv_mae[[i]] <- data.frame(fold = i, mae = mean(abs((lower_bound + upper_bound) / 2 - test$MeanSens)), model = "random forest")
-    cv_mace[[i]] <- data.frame(fold=i, mace=fold_mace, model="random forest")
+    cv_mae[[i]] <- mean(abs((lower_bound + upper_bound) / 2 - test$MeanSens))
+    cv_mace[[i]] <- fold_mace
   }
-  cv_mae_tab <- rbindlist(cv_mae)
-  cv_mace_tab <- rbindlist(cv_mace)
-  return(list(cv_mae_tab,cv_mace_tab))
+  # Compute overall metrics
+  cv_mae_overall <- mean(unlist(cv_mae))
+  cv_mace_overall <- mean(unlist(cv_mace))
+  return(c("RF", cv_mae_overall, cv_mace_overall))
 }

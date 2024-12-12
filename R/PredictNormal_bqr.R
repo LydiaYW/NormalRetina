@@ -1,4 +1,4 @@
-#' Predict normative retina sensitivity
+#' Predict normative retina sensitivity - bqr
 #' @param model A string.
 #' @param dt A numeric matrix from SensForFit.
 #' @param exam A string.
@@ -6,12 +6,7 @@
 #' @param coverage A number.
 #' @export
 #' @import qgam
-#' @import lme4
-#' @import ranger
 #' @import stats
-#' @examples
-#' # Here is an example
-#'
 #' @export
 PredictNormal_bqr <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, coverage=0.95 #,
                               # other_predict = NULL
@@ -54,15 +49,12 @@ PredictNormal_bqr <- function(dt, exam="Mesopic", model="LMM", CalibSplit=0.2, c
     qgam_mace <- abs(qgam_observed_coverage - coverage)
 
     # Store results
-    cv_mae[[i]] <- data.frame(fold = i, mae = qgam_mae, model = "bqr")
-    cv_mace[[i]] <- data.frame(
-      fold = i,
-      model = c("bqr"),
-      mace = c(qgam_mace),
-      observed_coverage = c(qgam_observed_coverage)
-    )
+    cv_mae[[i]] <- qgam_mae
+    cv_mace[[i]] <- qgam_mace
   }
-  cv_mae_tab <- rbindlist(cv_mae)
-  cv_mace_tab <- rbindlist(cv_mace)
-  return(list(cv_mae_tab,cv_mace_tab))
+
+  # Compute overall metrics
+  cv_mae_overall <- mean(unlist(cv_mae))
+  cv_mace_overall <- mean(unlist(cv_mace))
+  return(c("BQR", cv_mae_overall, cv_mace_overall))
 }

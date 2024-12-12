@@ -3,10 +3,11 @@
 #' @format A data frame with 2566404 rows and 6 variables:
 #' \describe{
 #'   \item{Examtype}{A string (Mesopic or Cyan or Red).}
-#'   \item{X_corr}{x coordinate.}
-#'   \item{Y_corr}{y coordinate.}
-#'   \item{mean}{mean sensitivity.}
-#'   \item{lwr}{lower bound of sensitivity.}
+#'   \item{eccentricity}{Stimulus eccentricity.}
+#'   \item{angle}{Stimulus angel.}
+#'   \item{x}{x coordinate.}
+#'   \item{y}{y coordinate.}
+#'   \item{MeanSens}{mean sensitivity.}
 #' }
 #' @usage data(ref77)
 #' @source Virtual sensitivity data
@@ -17,6 +18,7 @@
 #' @format A data frame with 7445 rows and 14 variables:
 #' \describe{
 #'   \item{Patient}{Patient ID.}
+#'   \item{Eye}{Study eye.}
 #'   \item{Examtype}{A string (Mesopic or Cyan or Red).}
 #'   \item{Age}{Patient age.}
 #'   \item{eccentricity}{Stimulus eccentricity.}

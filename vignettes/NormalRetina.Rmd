@@ -16,23 +16,15 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(NormalRetina)
-
-
-set.seed(312)
-x <- rnorm(100)
-y <- rnorm(100)
-myplot(x, y)
 ```
 
 The value of $\pi$ is `r pi`.
 
 ```{r out.width="100%"}
-knitr::include_graphics(
-  system.file("R_logo.svg.png", package = "NormalRetina")
-)
+
 ```
 
-![](`r system.file("R_logo.svg.png", package = "NormalRetina")`)
+
 
 
 You can see a full featured R script that uses the package under the following path:
