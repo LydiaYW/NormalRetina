@@ -1,0 +1,117 @@
+---
+title: "Normative retina sensitivity prediction"
+subtitle: "For PHS 7045"
+format:
+  revealjs:
+    slide-number: true
+    embed-resources: true
+    footer: "Yingjia Wei"
+    code-annotations: below
+    theme: ["default", "style.scss"]
+highlight-style: espresso
+author: 
+  - '**Yingjia Wei**'
+institute:
+  - The University of Utah
+date: 2024-12-12
+aspectratio: 169
+fig-format: svg
+---
+
+```{r}
+#| label: preamble
+#| echo: false
+#| warning: false
+#| message: false
+library(data.table)
+library(ggplot2)
+library(NormalRetina)
+```
+
+# Introduction
+
+## Hill-of-vision recap
+
+![](fig/RetinaHoV.png){width="100%" fig-align="center"}
+
+- Hill-of-vision: a graphical representation of retinal sensitivity, "peaks" represent areas of high sensitivity.
+- We would like to use this hill-of-vision map to calculate standard sensitivity loss
+
+## Diffculty: Age-adjusted normative data
+**Conservative method: spatial interpolation**
+- Actually interpolate the sensitivity at the single virtual patient's testing results using Kriging.
+- Challenging to interpret and information lost when generating the single virtual patient's testing results from a population.
+
+**An interpretable age-adjusted prediction model would be much better!**
+
+## Interpolation function
+
+::: {.columns}
+::: {.column width="50%" .incremental}
+- Works with multiple exam types (e.g., Mesopic, Cyan, Red, and Cyan-Red difference).
+
+- Provides predicted sensitivity values and visualizations with parallel computing.
+
+![](../man/figures/README-example-2.png){width="100%" fig-align="left"}
+:::
+::: {.column width="50%"}
+```{r}
+#| eval: true
+#| echo: true
+#| code-line-numbers: "|9,12,14"
+##----Interpolation----
+data("ref77")
+head(ref77) |> knitr::kable(digits = 2, format = "html")
+interpolated_77 <- Interpolation(dt = ref77, ncpus=NULL, cl=NULL)
+## hill-of-vision from interpolation 
+VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]]$Examtype)) # plot mesopic results for comparison
+```
+:::
+:::
+
+
+
+# Extension
+## Modelling age-adjusted normative data
+- Objective: Predict retinal sensitivity based on patient-specific characteristics like age and test location.
+- Models Used: Linear Mixed Model (LMM), Bayesian Quantile Regression (BQR) and Random Forest (RF).
+- Performance comparison: mean absolute error (MAE) and mean absolute calibration error (MACE).
+
+
+## Workflow
+
+::: {.columns}
+::: {.column width="50%" .incremental}
+- **Step 1: Data preparation**: `SensForFit()`
+- **Step 2: Model performance comparison**: `PredictCompare()`
+  - also specific functions: `PredictNormal_lmm()`, `PredictNormal_bqr()`, `PredictNormal_rf()`
+- **Step 3: Prediction based on optimal model**: `PredictSensitivity()`
+- **Step 4: Visualization**: `VisualRetina()`
+
+![](../man/figures/README-example-1.png){width="100%" fig-align="left"}
+:::
+::: {.column width="50%"}
+```{r}
+#| eval: true
+#| echo: true
+#| code-line-numbers: "|9,12,14"
+data("refMes")
+## data preparation
+refMes <- SensForFit(dt = refMes, examcol = "Examtype", idcol = "Patient", agecol = "Age", senscol = "MeanSens", k = 10)
+## model comparison
+(res.tab <- PredictCompare(dt = refMes, exam = "Mesopic", CalibSplit = 0.2, coverage = 0.95))
+## prediction for a future patient aged 77 (e.g. bqr is the best)
+pred_BQR_77 <- PredictSensitivity(model = "BQR", age = 77, dt = refMes)
+## hill-of-vision for new patient
+VisualRetina(pred_sens = pred_BQR_77, exam = "Mesopic")
+```
+:::
+:::
+
+## Discussion
+**Other Models vs. Interpolation**
+- Interpretable
+- No need to predict complete hill-of-vision
+- Allow variability within patient and site
+- Still need exploration for better conformal prediction framework, especially for machine learning methods
+

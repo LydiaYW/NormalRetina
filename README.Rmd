@@ -65,7 +65,7 @@ pred_BQR_77 <- PredictSensitivity(model = "BQR", age = 77, dt = refMes)
 ## hill-of-vision for new patient
 VisualRetina(pred_sens = pred_BQR_77, exam = "Mesopic")
 ```
-![](man/figures/README-example-1.png){width="60%" fig-align="left"}
+![](man/figures/README-example-1.png){width="30%" fig-align="left"}
 ```{r,  message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
 ##----Interpolation----
 data("ref77")
@@ -73,4 +73,4 @@ interpolated_77 <- Interpolation(dt = ref77)
 ## hill-of-vision from interpolation 
 VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]]$Examtype)) # plot mesopic results for comparison
 ```
-![](man/figures/README-example-2.png){width="60%" fig-align="left"}
+![](man/figures/README-example-2.png){width="30%" fig-align="left"}

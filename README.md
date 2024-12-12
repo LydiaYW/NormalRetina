@@ -68,7 +68,7 @@ pred_BQR_77 <- PredictSensitivity(model = "BQR", age = 77, dt = refMes)
 VisualRetina(pred_sens = pred_BQR_77, exam = "Mesopic")
 ```
 
-<img src="man/figures/README-example-1.png" style="width:60.0%"
+<img src="man/figures/README-example-1.png" style="width:30.0%"
 data-fig-align="left" />
 
 ``` r
@@ -79,5 +79,5 @@ interpolated_77 <- Interpolation(dt = ref77)
 VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]]$Examtype)) # plot mesopic results for comparison
 ```
 
-<img src="man/figures/README-example-2.png" style="width:60.0%"
+<img src="man/figures/README-example-2.png" style="width:30.0%"
 data-fig-align="left" />
