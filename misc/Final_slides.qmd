@@ -47,7 +47,7 @@ library(NormalRetina)
 
 **An interpretable age-adjusted prediction model would be much better!**
 
-## Interpolation function
+## Spacial interpolation
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -72,7 +72,16 @@ interpolated_77 <- Interpolation(dt = ref77, ncpus=NULL, cl=NULL)
 ## hill-of-vision from interpolation 
 VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]]$Examtype)) # plot mesopic results for comparison
 ```
-![](../man/figures/README-example-2.png){width="100%" fig-align="left"}
+
+```{r}
+#| label: RMSE
+#| eval: true
+#| echo: false
+knitr::kable(data.frame(ExamType=c("Mesopic", "Dark-adapted Cyan", "Dark-adapted Red", "Cyan-Red difference"), Model=c("Spherical", "Spherical", "Spherical", "Stable"), RMSE=c(0.3715, 0.9294, 0.5114, 0.9096), PartialSill=c(19,24,22,22), CorrDistance=c(6,6,10,8)), align = "l", format = "html") |>
+  kableExtra::kable_styling(font_size = 15, position = "left", full_width = F)
+```
+
+![](../man/figures/README-example-2.png){width="80%" fig-align="left"}
 
 :::
 :::
@@ -84,9 +93,14 @@ VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]
 
 - Objective: Predict retinal sensitivity based on patient-specific characteristics like age and test location.
 
-- Models Used: Linear Mixed Model (LMM), Bayesian Quantile Regression (BQR) and Random Forest (RF).
+- Models Used: 
+  1. Linear Mixed Model (LMM), with age and eccentricity.
+  
+  2. Bayesian Quantile Regression (BQR), including an isotropic smooth (thin plate regression spline) for the x and y coordinate, a spline for the age and a tensor product smooth for age and eccentricity. 
+  
+  3. Random Forest (RF), using the variables: participant age, eye, eccentricity and angular distance from the fovea, and spatial coordinates (x,y).
 
-- Performance comparison: mean absolute error (MAE) and mean absolute calibration error (MACE).
+- Performance comparison: mean absolute error (MAE) and mean absolute calibration error (MACE), with patient-wise cross-validation and conformal prediction frameworks.
 
 
 ## Workflow
@@ -141,8 +155,15 @@ res.tab |> data.frame() |>
 
 - Further exploration is needed to develop a robust conformal prediction framework, especially for machine learning methods.
 
----
+## Reference
+- [1] Pfau, M., Jolly, J. K., Charng, J., von der Emde, L., Müller, P. L., Ansari, G., Pfau, K., Chen, F. K., & Wu, Z. (2024). Multicenter normative data for mesopic microperimetry. Investigative Ophthalmology & Visual Science, 65(12), Article 27. https://doi.org/10.1167/iovs.65.12.27
 
-### Thanks!
+- [2] Pfau, M., Müller, P. L., von der Emde, L., Lindner, M., Möller, P. T., Fleckenstein, M., Holz, F. G., & Schmitz-Valckenberg, S. (2020). Mesopic and dark-adapted two-color fundus-controlled perimetry in geographic atrophy secondary to age-related macular degeneration. Retina, 40(1), 169–180. https://doi.org/10.1097/IAE.0000000000002337
+
+- [3] Angelopoulos, A. N., & Bates, S. (2021). A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification. arXiv. https://doi.org/10.48550/arXiv.2107.07511
+
+- [4] Johansson, U., Boström, H., Löfström, T. et al. Regression conformal prediction with random forests. Mach Learn 97, 155–176 (2014). https://doi.org/10.1007/s10994-014-5453-0
+
+## Thanks!
 
 

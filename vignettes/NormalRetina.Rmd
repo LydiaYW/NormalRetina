@@ -28,13 +28,13 @@ knitr::opts_chunk$set(
 library(NormalRetina)
 ```
 
-## Workflow
+# Workflow
 
-### Spacial interpolation
+## Spacial interpolation
 **Step 1: Interpolation**
 There's a virtual patient dataset (ref77) aged 77 in *NormalRetina*.
 
-Based on this virtual patient, `Interpolation()` will now predict the normative sensitivity data for each data point using Kriging parallelly. Kriging is a spatial interpolation technique originally developed for geostatistical applications. Separate surfaces were fit for the mean of all four types of testing (Mesopic, Cyan, Red, CRdiff). Output will be a list of 4 data frames, each contains predicted retina sensitivity for a 40*40 degree grid.
+Based on this virtual patient, we will now predict the normative sensitivity data for each data point using Kriging. Kriging is a spatial interpolation technique originally developed for geostatistical applications. Separate surfaces were fit for the mean of all three types of testing. To select the variogram model, nugget and range parameters for each surface we used the *fit.variogram* of the *gstat* package. Kriging was carried out using the *krige* function from the same package. The validity of the interpolated data was tested with leave-one-out cross-validation (LOOCV) using root mean square (RMS) difference between estimated and measured sensitivities as metric. We used kriging model with lowest RMSE for prediction. Function `Interpolation` needs input data table with three columns: coordinates (x,y) and mean sensitivity for each point. It will use parallel computing so you can indicate the number of cpus and cores `ncpus & cl` or just let the function find optimal number of available cpus and cores.
 
 ```{r out.width="100%", message=FALSE}
 ##----Interpolation----
@@ -44,7 +44,7 @@ interpolated_77 <- Interpolation(dt = ref77, ncpus=NULL, cl=NULL)
 
 
 **Step 2: Visualization**
-Function `VisualRetina` will plot hill-of-vision map for the center 20*20 degree predictions. The color of filling will change based types of testing.
+Function `VisualRetina` will plot hill-of-vision map for the center 20x20 degree predictions. The color of filling will change based types of testing. It has two argument: `pred_sens` is the prediction from either `Interpolation()` or `PredictSensitivity()` functions. `exam` is a string in *Mesopic, Cyan, Red, and CRdiff*.
 
 ```{r out.width="100%", message=FALSE}
 ## hill-of-vision from interpolation 
@@ -54,7 +54,7 @@ VisualRetina(pred_sens = interpolated_77[[2]], exam = unique(interpolated_77[[2]
 
 
 
-### Modelling 
+## Modelling 
 
 **Step 1: Data preparation**
 
@@ -71,15 +71,42 @@ refMes <- SensForFit(dt = refMes, examcol = "Examtype", idcol = "Patient", ageco
 
 Support for **Linear Mixed Models (LMM)**, **Bayesian Quantile Regression (BQR)**, and **Random Forest (RF)**.
 
-The mean absolute error (MAE) and mean absolute calibration error (MACE) were evaluated as performance measures. A conformal prediction framework was employed for calibration, using a 4:1 training-to-calibration patient-wise data split.
+- LMM: $MeanSens \sim Age + Eccentricity + (1|Patient)$
 
-`PredictCompare()` function will return a table with model name and performance metrics for comparison. Similarly, it can only work on one of the four types of testing (Mesopic, Cyan, Red, CRdiff). `CalibSplit` is 0.2 by default indicating a 4:1 split between training and calibration sets. `coverage` is 0.95 by default to calculate MACE.
+- BQR: including an isotropic smooth (thin plate regression spline) for the x and y coordinate, a spline for the age and a tensor product smooth for age and eccentricity. We used the R package qgam to obtain the quantiles of interest (0.025, 0.5, 0.975)
+
+- RF: developed using the variables: participant age, eye, eccentricity and angular distance from the fovea, and spatial coordinates (x,y). 
+
+The mean absolute error (MAE) and mean absolute calibration error (MACE) were evaluated as performance measures. A conformal prediction framework was employed for calibration, using a 4:1 training-to-calibration patient-wise data split. We will use a within-patient 10-fold cross-validation to evaluate the model performance.
+
+
+### General conformal prediction for MACE calculation (LMM)
+1. split the training data into a training set and calibration set (4:1)
+2. fit regression model on training set
+3. calculate absolute residuals on calibration set
+4. compute a quantile of the empirical distribution of the absolute residuals $q$
+5. prediction interval: $C=|\mu - q, \mu + q|$
+
+### Conformalized quantile regression (CQR)
+1. fit two quantile regression on training set: $q_{lower}, q_{upper}$
+2. compute conformity scores that quantify the error made by the plug-in prediction interval $C(x)=|q_{lower}(x), q_{upper}(x)|$ 
+3. the scores are evaluated on the calibration set: $E_i=max[q_{lower}(x_i) - Y_i, Y_i - q_{upper}(x_i)]$ (Conformity score)
+4. given new input data X_n+1, prediction interval for Y_n+1 is: $C(X_{n+1}) = [q_{lower}(X_{n+1}) - Q(E,I_2), q_{upper}(X_{n+1}) - Q(E,I_2)]$, where $Q(E,I_2) := (1-\alpha)(1+1/|I_2|)$-th empirical quantile of $E$
+
+### Conformal prediction in random forest
+1. $\alpha_{calibration}=|y-h\theta(x)|$ where $\theta$ is a random factor determining the subset of trees for which $x$ is out-of-bag.
+
+2. $\alpha_{test}=|y-h(x)|$ Rather than increasing the risk for generating an invalid conformal predictor, one would expect the conformal predictor using out-of-bag instances to be conservative. Therefore, the proposed setup should be, if anything, less efficient than if the whole forest was used together with additional calibration instances. Naturally, the validity will be investigated in the experimentation in order to support this reasoning empirically.
+
+3. nonconformity function: $\alpha_i=\frac{|y_i-y_i|}{exp(\mu_i)+\beta}$ where $\mu_i$ is the prediction of the value $ln(|y_i-y_i|)$ produce by the linear ANN and $\beta$ is a parameter used to control the sensitivity of the nonconformity measure.
+
+`PredictCompare()` function will return a table with model name and performance metrics for comparison. Similarly, it can only work on one of the four types of testing (Mesopic, Cyan, Red, CRdiff). Argument `exam` is a string in *Mesopic, Cyan, Red, and CRdiff*. `CalibSplit` is 0.2 by default indicating a 4:1 split between training and calibration sets. `coverage` is 0.95 by default to calculate MACE.
 
 ```{r out.width="100%", message=FALSE}
 (res.tab <- PredictCompare(dt = refMes, exam = "Mesopic", CalibSplit = 0.2, coverage = 0.95))
 ```
 
-There are also functions to train the model based on each of the three methods:
+There are also specific functions to train the model based on each of the three methods:
 
 ```{r, eval=FALSE}
 lmm_results <- PredictNormal_lmm(dt = refMes, CalibSplit = 0.2, coverage = 0.95)
@@ -90,7 +117,7 @@ rf_results <- PredictNormal_rf(dt = refMes, CalibSplit = 0.2, coverage = 0.95)
 
 **Step 3: Prediction based on optimal model**
 
-For a patient with specific age, you can predict their hill-of-vision map with the optimal model selected from `PredictCompare()` function output. It's also a grid of 40*40 degree.
+For a patient with specific age, you can predict their hill-of-vision map with the optimal model selected from `PredictCompare()` function output. It's also a grid of 40x40 degree. The argument `model` is one of *LMM, BQR, RF*, and age is the number of age for the new patient.
 
 ```{r out.width="100%", message=FALSE}
 ## prediction for a future patient aged 77
@@ -98,10 +125,18 @@ pred_BQR_77 <- PredictSensitivity(model = "BQR", age = 77, dt = refMes)
 ```
 
 **Step 4: Visualization**
-Based on the prediction, you can plot the hill-of-vision map with function `VisualRetina()`.
+Based on the prediction, you can plot the hill-of-vision map with function `VisualRetina()`. Also see Section *Interpolation*.
 
 ```{r out.width="100%", message=FALSE}
 ## hill-of-vision for new patient
 VisualRetina(pred_sens = pred_BQR_77, exam = "Mesopic")
 ```
 
+# Reference
+[1] Pfau, M., Jolly, J. K., Charng, J., von der Emde, L., Müller, P. L., Ansari, G., Pfau, K., Chen, F. K., & Wu, Z. (2024). Multicenter normative data for mesopic microperimetry. Investigative Ophthalmology & Visual Science, 65(12), Article 27. https://doi.org/10.1167/iovs.65.12.27
+
+[2] Pfau, M., Müller, P. L., von der Emde, L., Lindner, M., Möller, P. T., Fleckenstein, M., Holz, F. G., & Schmitz-Valckenberg, S. (2020). Mesopic and dark-adapted two-color fundus-controlled perimetry in geographic atrophy secondary to age-related macular degeneration. Retina, 40(1), 169–180. https://doi.org/10.1097/IAE.0000000000002337
+
+[3] Angelopoulos, A. N., & Bates, S. (2021). A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification. arXiv. https://doi.org/10.48550/arXiv.2107.07511
+
+[4] Johansson, U., Boström, H., Löfström, T. et al. Regression conformal prediction with random forests. Mach Learn 97, 155–176 (2014). https://doi.org/10.1007/s10994-014-5453-0
