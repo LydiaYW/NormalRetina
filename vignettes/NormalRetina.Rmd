@@ -24,7 +24,7 @@ The value of $\pi$ is `r pi`.
 
 ```
 
-
+![](`r system.file("R_logo.svg.png", package = "NormalRetina")`)
 
 
 You can see a full featured R script that uses the package under the following path:

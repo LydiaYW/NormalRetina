@@ -1,6 +1,5 @@
 #' Predict normative retina sensitivity
 #' @param dt A numeric matrix from SensForFit.
-#' @param exam A string.
 #' @param ncpus A number.
 #' @param cl A number.
 #' @import graphics
@@ -10,14 +9,10 @@
 #' @import data.table
 #' @examples
 #' # Here is an example
-#' Interpolation(ref77, "Mesopic")
+#' Interpolation(ref77)
 #' @export
-Interpolation <- function(dt, exam, ncpus=1L, cl=NULL) {
+Interpolation <- function(dt, ncpus=NULL, cl=NULL) {
   output <- list()
-
-  if(!(exam %in% c("Mesopic", "Cyan", "Red", "CRdiff"))){
-    stop("Please indicate the type of exam (Mesopic, Cyan, Red or CRdiff)")
-  }
   # Calling parallel
   if (is.null(ncpus)) {
     ncpus <- max(1, parallel::detectCores() - 1)  # Use all but one core
