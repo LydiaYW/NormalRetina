@@ -8,9 +8,6 @@
 #' @import sp
 #' @import parallel
 #' @import data.table
-#' @examples
-#' # Here is an example
-#' interpolated_pred=Interpolation(dt=ref77, ncpus=NULL, cl=NULL)
 #' @export
 Interpolation <- function(dt, exam="Mesopic", ncpus=NULL, cl=NULL) {
   output <- list()

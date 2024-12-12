@@ -18,7 +18,3 @@ Interpolation(dt, exam = "Mesopic", ncpus = NULL, cl = NULL)
 \description{
 Predict normative retina sensitivity with spacial interpolation
 }
-\examples{
-# Here is an example
-interpolated_pred=Interpolation(dt=ref77, ncpus=NULL, cl=NULL)
-}
