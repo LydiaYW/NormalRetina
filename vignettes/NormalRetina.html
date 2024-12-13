@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>NormalRetina</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">NormalRetina</h1>
+
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p><code>NormalRetina</code> is an R package designed to predict
+normative retina sensitivity, providing tools for data processing,
+modeling, prediction and visualization. It is particularly useful for
+age-adjusted normative data for retinal sensitivity.</p>
+<ul>
+<li>provide traditional spacial interpolation for a single patient</li>
+<li>provide model comparison and prediction for a population</li>
+<li>provide visualization of hill-of-vision map from above methods</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(NormalRetina)</span></code></pre></div>
+<div id="workflow" class="section level2">
+<h2>Workflow</h2>
+<div id="spacial-interpolation" class="section level3">
+<h3>Spacial interpolation</h3>
+<p><strong>Step 1: Interpolation</strong> There’s a virtual patient
+dataset (ref77) aged 77 in <em>NormalRetina</em>.</p>
+<p>Based on this virtual patient, <code>Interpolation()</code> will now
+predict the normative sensitivity data for each data point using Kriging
+parallelly. Kriging is a spatial interpolation technique originally
+developed for geostatistical applications. Separate surfaces were fit
+for the mean of all four types of testing (Mesopic, Cyan, Red, CRdiff).
+Output will be a list of 4 data frames, each contains predicted retina
+sensitivity for a 40*40 degree grid.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="do">##----Interpolation----</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;ref77&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>interpolated_77 <span class="ot">&lt;-</span> <span class="fu">Interpolation</span>(<span class="at">dt =</span> ref77, <span class="at">ncpus=</span><span class="cn">NULL</span>, <span class="at">cl=</span><span class="cn">NULL</span>)</span></code></pre></div>
+<p><strong>Step 2: Visualization</strong> Function
+<code>VisualRetina</code> will plot hill-of-vision map for the center
+20*20 degree predictions. The color of filling will change based types
+of testing.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="do">## hill-of-vision from interpolation </span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">VisualRetina</span>(<span class="at">pred_sens =</span> interpolated_77[[<span class="dv">2</span>]], <span class="at">exam =</span> <span class="fu">unique</span>(interpolated_77[[<span class="dv">2</span>]]<span class="sc">$</span>Examtype)) <span class="co"># plot mesopic results for comparison</span></span></code></pre></div>
+</div>
+<div id="modelling" class="section level3">
+<h3>Modelling</h3>
+<p><strong>Step 1: Data preparation</strong></p>
+<p>There’s a simulated dataset (refMes) of 100 virtual participants aged
+from 18-84 in <em>NormalRetina</em>.</p>
+<p>You may use function <code>SensForFit()</code> for data preparation.
+It will check and reshape the data for modelling, also provide a k-fold
+patient-wise split for model training with cross-validation. It will
+also change the “&lt;0” dB to 0 dB as it is not possible to have
+negative sensitivity.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;refMes&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>refMes <span class="ot">&lt;-</span> <span class="fu">SensForFit</span>(<span class="at">dt =</span> refMes, <span class="at">examcol =</span> <span class="st">&quot;Examtype&quot;</span>, <span class="at">idcol =</span> <span class="st">&quot;Patient&quot;</span>, <span class="at">agecol =</span> <span class="st">&quot;Age&quot;</span>, <span class="at">senscol =</span> <span class="st">&quot;MeanSens&quot;</span>, <span class="at">k =</span> <span class="dv">10</span>)</span></code></pre></div>
+<p><strong>Step 2: Model performance comparison</strong></p>
+<p>Support for <strong>Linear Mixed Models (LMM)</strong>,
+<strong>Bayesian Quantile Regression (BQR)</strong>, and <strong>Random
+Forest (RF)</strong>.</p>
+<p>The mean absolute error (MAE) and mean absolute calibration error
+(MACE) were evaluated as performance measures. A conformal prediction
+framework was employed for calibration, using a 4:1
+training-to-calibration patient-wise data split.</p>
+<p><code>PredictCompare()</code> function will return a table with model
+name and performance metrics for comparison. Similarly, it can only work
+on one of the four types of testing (Mesopic, Cyan, Red, CRdiff).
+<code>CalibSplit</code> is 0.2 by default indicating a 4:1 split between
+training and calibration sets. <code>coverage</code> is 0.95 by default
+to calculate MACE.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>(res.tab <span class="ot">&lt;-</span> <span class="fu">PredictCompare</span>(<span class="at">dt =</span> refMes, <span class="at">exam =</span> <span class="st">&quot;Mesopic&quot;</span>, <span class="at">CalibSplit =</span> <span class="fl">0.2</span>, <span class="at">coverage =</span> <span class="fl">0.95</span>))</span></code></pre></div>
+<p>There are also functions to train the model based on each of the
+three methods:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>lmm_results <span class="ot">&lt;-</span> <span class="fu">PredictNormal_lmm</span>(<span class="at">dt =</span> refMes, <span class="at">CalibSplit =</span> <span class="fl">0.2</span>, <span class="at">coverage =</span> <span class="fl">0.95</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>bqr_results <span class="ot">&lt;-</span> <span class="fu">PredictNormal_bqr</span>(<span class="at">dt =</span> refMes, <span class="at">CalibSplit =</span> <span class="fl">0.2</span>, <span class="at">coverage =</span> <span class="fl">0.95</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>rf_results <span class="ot">&lt;-</span> <span class="fu">PredictNormal_rf</span>(<span class="at">dt =</span> refMes, <span class="at">CalibSplit =</span> <span class="fl">0.2</span>, <span class="at">coverage =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<p><strong>Step 3: Prediction based on optimal model</strong></p>
+<p>For a patient with specific age, you can predict their hill-of-vision
+map with the optimal model selected from <code>PredictCompare()</code>
+function output. It’s also a grid of 40*40 degree.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="do">## prediction for a future patient aged 77</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>pred_BQR_77 <span class="ot">&lt;-</span> <span class="fu">PredictSensitivity</span>(<span class="at">model =</span> <span class="st">&quot;BQR&quot;</span>, <span class="at">age =</span> <span class="dv">77</span>, <span class="at">dt =</span> refMes)</span></code></pre></div>
+<p><strong>Step 4: Visualization</strong> Based on the prediction, you
+can plot the hill-of-vision map with function
+<code>VisualRetina()</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="do">## hill-of-vision for new patient</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">VisualRetina</span>(<span class="at">pred_sens =</span> pred_BQR_77, <span class="at">exam =</span> <span class="st">&quot;Mesopic&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
